@@ -52,54 +52,33 @@ def save_text(path: str, content: str):
 def load_text(path: str) -> str:
     with open(path, "r", encoding="utf-8") as f:
         return f.read()
+    
 
+en_sentence = "I'm afraid I cannot attend tomorrow's meeting due to a scheduling conflict. Would it be possible to reschedule to next week?"
 
-article = (
-    """根據最新研究顯示，台灣的科技產業正面臨人才短缺的嚴峻挑戰。調查發現，有超過70%的科技公司表示難以找到合適的AI和資料科學人才。這個問題的根源包括：教育體系與產業需求脫節、薪資競爭力不足，以及人才外流至海外市場。為了解決這個問題，政府推出了多項措施，包括增加大學相關科系名額、提供企業培訓補助，以及放寬外籍人才引進政策。然而，專家認為這些措施需要時間才能看到成效，短期內企業仍需要自行投資人才培育。"""
-)
-
-# ===== TODO(學生)：設計你的 CoT Prompt =====
-system_cot = """
-你是一位善於結構化分析的助教，擅長將文章內容結構話分析並提出核心摘要。請先輸出「分析步驟」，再輸出「最終摘要」。
-
-格式：
-[分析步驟]
-1) 主題識別：清楚的說明文章的核心主題或是議題。
-2) 要點提取：列出文章中最終要的資訊、數據、政策或原因。
-3) 重要性排序：將要點依照影響力或是重要性排序，最重要的放在最前面。
-[最終摘要]
-1)將文章內容濃縮，並保持完整意思
-2)字數不要超過50字
+# ===== TODO(學生)：設計能同時完成「翻譯＋語氣調整」的 Prompt =====
+system_trans = """
+你是一位了解台灣語境的翻譯與口吻調整專家。
+請將英文句子轉為「繁體中文」，語氣友善、輕鬆，但仍保留禮貌與清楚度。
+若啟用進階挑戰，請產出 2–3 種不同語氣版本，並說明適用情境。
 """.strip()
 
-user_cot_prompt = f"""
-閱讀以下文章，依指示先列出分析步驟，再產生 50 字以內的總結：
-【文章】
-{article}
+user_trans_prompt = f"""
+將下列英文句子轉為繁體中文，語氣友善、輕鬆，並保留原意：
+{en_sentence}
+
+（進階）請額外給我 2–3 種不同口吻版本，並說明適用情境。
 """
 
-# TODO: 使用 LLM（或你自定義的規則程式）產生輸出
-cot_output = call_llm(user_cot_prompt, system=system_cot)
+# TODO: 使用 LLM 產生輸出
+# trans_output = call_llm(user_trans_prompt, system=system_trans)
 
-'''cot_output = """
-[分析步驟]
-1) 主題識別：TODO
-2) 要點提取：TODO
-3) 重要性排序：TODO
-[最終摘要]
-TODO（<= 50 字）
+trans_output = """
+【基礎版】TODO：友善、輕鬆版
+【版本A】TODO：更口語
+【版本B】TODO：較正式但溫和
+（說明）TODO：各版本適用情境
 """.strip()
-'''
 
-# 50字內檢查（僅對「最終摘要」行做粗略偵測）
-lines = [ln for ln in cot_output.splitlines() if ln.strip()]
-final_lines = [ln for ln in lines if ln.strip().startswith("[最終摘要]") or ln.strip().startswith("最終摘要")]
-if final_lines:
-    final = final_lines[-1].replace("[最終摘要]", "").strip("：: ")
-    n_chars = count_zh_chars(final)
-    print(f"最終摘要字數：約 {n_chars} 字（目標 <= 50）")
-else:
-    print("⚠️ 未偵測到最終摘要段落，請檢查輸出格式。")
-
-save_text("outputs/task2_summary_cot.txt", cot_output)
-print("✅ 任務二完成（暫存）。輸出檔：outputs/task2_summary_cot.txt")
+save_text("outputs/task3_translation_tone.txt", trans_output)
+print("✅ 任務三完成（暫存）。輸出檔：outputs/task3_translation_tone.txt")
