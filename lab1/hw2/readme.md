@@ -70,4 +70,4 @@ pip install numpy pandas matplotlib seaborn scikit-learn jieba stopwordsiso open
 -AI 模型的力量：能處理更高層次的語意關聯，讓文本分析更貼近人類思考。
 也必須注意
 -AI 模型雖強大，但若不理解底層邏輯，將無法評估其可靠性。
--傳統 NLP 方法仍是理解語言處理技術的重要根基。
+-傳統 NLP 方法仍是理解語言處理技術的重要根基。 
